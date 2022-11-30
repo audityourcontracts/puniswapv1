@@ -12,4 +12,16 @@ contract Token is ERC20 {
     ) ERC20(name, symbol, decimals) {
             _mint(msg.sender, initialSupply);
     }
+
+    function mint(address to, uint256 amount) external virtual {
+        totalSupply += amount;
+
+        // Cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value.
+        unchecked {
+            balanceOf[to] += amount;
+        }
+
+        emit Transfer(address(0), to, amount);
+    }
 }
