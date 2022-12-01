@@ -6,9 +6,11 @@ contract Exchange {
     address public tokenAddress;
 
     error TokenZeroAddress();
+    error InvalidReserveArgs();
+    error InputIsZero();
 
     constructor(address _token) {
-        require(_token != address(0), "token cannot be zero address");
+        if(_token == address(0)) revert TokenZeroAddress();
         tokenAddress = _token;
     }
 
@@ -22,7 +24,7 @@ contract Exchange {
     }
 
     function getPrice(uint256 inputReserve, uint256 outputReserve) public pure returns (uint256) {
-        require(inputReserve > 0 && outputReserve > 0, "invalid reserves");
+        if (inputReserve == 0 || outputReserve == 0) revert InvalidReserveArgs();
         return (inputReserve * 1000) / outputReserve;
     }
 
@@ -42,7 +44,7 @@ contract Exchange {
         uint256 inputAmount,
         uint256 inputReserve,
         uint256 outputReserve) private pure returns (uint256) {
-            require(inputReserve > 0 && outputReserve > 0, "invalid reserves");
+            if (inputReserve == 0 || outputReserve == 0) revert InvalidReserveArgs();
             return (inputAmount * outputReserve) / (inputReserve + inputAmount);
         }
 }
